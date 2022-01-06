@@ -8,7 +8,18 @@
   <script src="https://unpkg.com/@babel/standalone@7.12.4/babel.js"></script>
 
   <script type="text/babel">
-    const element = <div className="container">Hello World</div>
+    const className = 'container'
+    const children = 'Hello World'
+    const element = (
+      <div className={className} key="one">
+        {children}
+      </div>
+    )
+
+    const className2 = 'container'
+    const children2 = 'Hello2 World2'
+    const props = {children: children2, className: className2, key: 'two'}
+    const element2 = <div {...props} />
 
     // 💰 there are a few subtle differences between JSX and HTML. One such
     // difference is how you apply a class to an element in JSX is by using
@@ -16,6 +27,6 @@
     // 📜 You can learn the differences between JSX and HTML syntax from the React docs here:
     // https://reactjs.org/docs/dom-elements.html#differences-in-attributes
 
-    ReactDOM.render(element, document.getElementById('root'))
+    ReactDOM.render([element, element2], document.getElementById('root'))
   </script>
 </body>
