@@ -5,35 +5,53 @@ import * as React from 'react'
 import {useLocalStorageState} from '../utils'
 
 function Board() {
-  const newGameArray = Array(9).fill(null)
+  const newGameArray = [Array(9).fill(null)]
   const [squares, setSquares] = useLocalStorageState(
     'noughtsandcrosses',
     newGameArray,
   )
-  const nextValue = calculateNextValue(squares)
-  const winner = calculateWinner(squares)
-  const status = calculateStatus(winner, squares, nextValue)
+  const [currentMove, setCurrentMove] = useLocalStorageState('move', 0)
+
+  const currentGame = squares[currentMove]
+  const nextValue = calculateNextValue(currentGame)
+  const winner = calculateWinner(currentGame)
+  const status = calculateStatus(winner, currentGame, nextValue)
 
   function selectSquare(square) {
-    if (winner || squares[square]) {
+    if (winner || currentGame[square]) {
       return
     }
-    const squaresCopy = [...squares]
-    squaresCopy[square] = nextValue
-    setSquares(squaresCopy)
+    const squaresCopy = squares.slice(0, currentMove + 1)
+    const latestMove = [...squaresCopy[currentMove]]
+    latestMove[square] = nextValue
+
+    setSquares([...squaresCopy, latestMove])
+    setCurrentMove(currentMove + 1)
   }
 
   function restart() {
     setSquares(newGameArray)
+    setCurrentMove(0)
   }
 
   function renderSquare(i) {
     return (
       <button className="square" onClick={() => selectSquare(i)}>
-        {squares[i]}
+        {currentGame[i]}
       </button>
     )
   }
+
+  const moves = squares.map((_, index) => (
+    <li key={index}>
+      <button
+        disabled={currentMove === index}
+        onClick={() => setCurrentMove(index)}
+      >
+        Go to move #{index}
+      </button>
+    </li>
+  ))
 
   return (
     <div>
@@ -56,6 +74,7 @@ function Board() {
       <button className="restart" onClick={restart}>
         restart
       </button>
+      <ol>{moves}</ol>
     </div>
   )
 }
