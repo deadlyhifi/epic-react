@@ -2,7 +2,8 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
-import ErrorBoundary from './06-error-boundary'
+// import ErrorBoundary from './06-error-boundary'
+import {ErrorBoundary} from 'react-error-boundary'
 import {
   fetchPokemon,
   PokemonForm,
