@@ -14,6 +14,7 @@ import {
 } from '../pokemon'
 
 function PokemonInfo({pokemonName}) {
+  const [status, setStatus] = React.useState('idle') //'idle' // 'idle'
   const [pokemon, setPokemon] = React.useState(null)
   const [error, setError] = React.useState(null)
   // 🐨 Have state for the pokemon (null)
@@ -21,19 +22,34 @@ function PokemonInfo({pokemonName}) {
   // pokemon name changes.
   // 💰 DON'T FORGET THE DEPENDENCIES ARRAY!
   React.useEffect(() => {
-    setError(null)
     if (!pokemonName) {
       return
     }
 
+    setError(null)
     setPokemon(null)
+    setStatus('pending')
     fetchPokemon(pokemonName).then(
-      pokemonData => setPokemon(pokemonData),
-      error => setError(error),
+      pokemonData => {
+        setPokemon(pokemonData)
+        setStatus('resolved')
+      },
+      error => {
+        setError(error)
+        setStatus('rejected')
+      },
     )
   }, [pokemonName])
 
-  if (error) {
+  if (status === 'idle') {
+    return 'Submit a Pokemon'
+  }
+
+  if (status === 'pending') {
+    return <PokemonInfoFallback name={pokemonName} />
+  }
+
+  if (status === 'rejected') {
     return (
       <div role="alert">
         There was an error:{' '}
@@ -42,15 +58,11 @@ function PokemonInfo({pokemonName}) {
     )
   }
 
-  if (!pokemonName) {
-    return 'Submit a Pokemon'
+  if (status === 'resolved') {
+    return <PokemonDataView pokemon={pokemon} />
   }
 
-  if (!pokemon) {
-    return <PokemonInfoFallback name={pokemonName} />
-  }
-
-  return <PokemonDataView pokemon={pokemon} />
+  throw new Error('Sorry, something went wrong')
 }
 
 function App() {
