@@ -81,6 +81,7 @@ function App() {
         <ErrorBoundary
           FallbackComponent={ErrorFallbackComponent}
           onReset={handleReset}
+          resetKeys={[pokemonName]}
         >
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
