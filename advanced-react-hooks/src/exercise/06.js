@@ -3,9 +3,14 @@
 
 import * as React from 'react'
 
+// Should only be used for computationally expensive debug values.
+// Otherwise just put the values in as the first parm to useDebugValue.
+const formatDebugValue = ({query, state}) => `${query} => ${state}`
+
 function useMedia(query, initialState = false) {
   const [state, setState] = React.useState(initialState)
-  React.useDebugValue(`${query} => ${state}`)
+  // React.useDebugValue(`${query} => ${state}`)
+  React.useDebugValue({query, state}, formatDebugValue)
 
   React.useEffect(() => {
     let mounted = true
