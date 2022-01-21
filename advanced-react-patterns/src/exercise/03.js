@@ -7,6 +7,7 @@ import {Switch} from '../switch'
 // 🐨 create your ToggleContext context here
 // 📜 https://reactjs.org/docs/context.html#reactcreatecontext
 const ToggleContext = React.createContext()
+ToggleContext.displayName = 'ToggleContext'
 
 function Toggle({children}) {
   const [on, setOn] = React.useState(false)
@@ -29,9 +30,7 @@ function Toggle({children}) {
 function useToggle() {
   const context = React.useContext(ToggleContext)
   if (!context) {
-    throw new Error(
-      'ToggleContext must be used within a ToggleContext.Provider',
-    )
+    throw new Error('useToggle must be used within a <Toggle>')
   }
   return context
 }
@@ -66,6 +65,8 @@ function App() {
     </div>
   )
 }
+// This will throw an error.
+// const App = () => <ToggleButton />
 
 export default App
 
