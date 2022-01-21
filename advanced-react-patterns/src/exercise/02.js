@@ -15,9 +15,11 @@ function Toggle(props) {
   // 📜 https://reactjs.org/docs/react-api.html#reactchildren
   // 📜 https://reactjs.org/docs/react-api.html#cloneelement
 
-  return React.Children.map(props.children, child =>
-    React.cloneElement(child, {on, toggle}),
-  )
+  return React.Children.map(props.children, child => {
+    return typeof child.type === 'string'
+      ? child
+      : React.cloneElement(child, {on, toggle})
+  })
 }
 
 // 🐨 Flesh out each of these components
@@ -35,12 +37,9 @@ function App() {
   return (
     <div>
       <Toggle>
-        <ToggleOn>
-          <p>The button is on</p>
-        </ToggleOn>
-        <ToggleOff>
-          <p>The button is off</p>
-        </ToggleOff>
+        <ToggleOn>The button is on</ToggleOn>
+        <ToggleOff>The button is off</ToggleOff>
+        <div>Hello</div>
         <ToggleButton />
       </Toggle>
     </div>
