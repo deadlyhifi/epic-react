@@ -16,6 +16,14 @@ function Toggle(props) {
   // 📜 https://reactjs.org/docs/react-api.html#cloneelement
 
   return React.Children.map(props.children, child => {
+    // This would prevent state from being passed into a self defined component.
+    // See MyToggleButton.
+    // if (allowedTyps.includes(child.type)) {
+    //   return React.cloneElement(child, {on, toggle})
+    // }
+    // return child
+
+    // As it stands now we accept any component and clone it passing these props through.
     return typeof child.type === 'string'
       ? child
       : React.cloneElement(child, {on, toggle})
@@ -33,6 +41,13 @@ const ToggleOff = ({on, children}) => (on ? null : children)
 // Accepts `on` and `toggle` props and returns the <Switch /> with those props.
 const ToggleButton = ({on, toggle}) => <Switch on={on} onClick={toggle} />
 
+// Use this to restrict creating a new component that has access to the props.
+// See line 19 how the restriction would be enforced.
+const allowedTyps = [ToggleOn, ToggleOff, ToggleButton]
+function MyToggleButton({on, _toggle}) {
+  return on ? 'The toggle is on yo' : 'the toggle is offffff'
+}
+
 function App() {
   return (
     <div>
@@ -41,6 +56,7 @@ function App() {
         <ToggleOff>The button is off</ToggleOff>
         <div>Hello</div>
         <ToggleButton />
+        <MyToggleButton />
       </Toggle>
     </div>
   )
