@@ -48,12 +48,26 @@ function useToggle({
   // `onIsControlled`, otherwise, it should be `state.on`.
   const on = onIsControlled ? controlledOn : state.on
 
+  // Check for correct props and (un)controlled state changes
   React.useEffect(() => {
     warning(
       !(!readOnly && !Boolean(onChange) && onIsControlled),
       `An \`on\` prop was provided to useToggle without an \`onChange\` handler. This will render a read-only toggle. If you want it to be mutable, use \`initialOn\`. Otherwise, set either \`onChange\` or \`readOnly\`.`,
     )
   }, [onChange, onIsControlled, readOnly])
+
+  const {current: onWasControlled} = React.useRef(onIsControlled)
+  React.useEffect(() => {
+    warning(
+      !(onIsControlled && !onWasControlled),
+      'Changing from uncontrolled to controlled',
+    )
+    warning(
+      !(!onIsControlled && onWasControlled),
+      'Changing from controlled to uncontrolled',
+    )
+  }, [onIsControlled, onWasControlled])
+  // End error checks
 
   // We want to call `onChange` any time we need to make a state change, but we
   // only want to call `dispatch` if `!onIsControlled` (otherwise we could get
