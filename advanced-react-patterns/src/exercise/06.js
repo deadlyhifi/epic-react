@@ -97,17 +97,22 @@ function useToggle({
   const on = onIsControlled ? controlledOn : state.on
 
   // Check for correct props and (un)controlled state changes
-  useControlledSwitchWarning(controlledOn, 'on', 'useToggle')
-  useOnChangeReadOnlyWarning(
-    controlledOn,
-    'on',
-    'useToggle',
-    Boolean(onChange),
-    readOnly,
-    'readOnly',
-    'initialOn',
-    'onChange',
-  )
+  // Safe to ignore warnings as NODE_ENV won't change in environment.
+  if (process.env.NODE_ENV !== 'production') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useControlledSwitchWarning(controlledOn, 'on', 'useToggle')
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useOnChangeReadOnlyWarning(
+      controlledOn,
+      'on',
+      'useToggle',
+      Boolean(onChange),
+      readOnly,
+      'readOnly',
+      'initialOn',
+      'onChange',
+    )
+  }
   // End error checks
 
   // We want to call `onChange` any time we need to make a state change, but we
