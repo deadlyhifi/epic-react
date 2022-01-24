@@ -10,6 +10,11 @@ import * as React from 'react'
 const handleLoadGlobe = () => import('../globe')
 const Globe = React.lazy(handleLoadGlobe)
 
+// We can leverage Webpack to set an import as `prefetch`. When the browser is
+// idle it will load suplementary scripts.
+// With this enabled the onMouseEnter and onFocus on the <label> are not required.
+// const Globe = React.lazy(() => import(/* webpackPrefetch: true */ '../globe'))
+
 function App() {
   const [showGlobe, setShowGlobe] = React.useState(false)
 
