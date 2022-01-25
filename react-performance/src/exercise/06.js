@@ -69,10 +69,10 @@ function DogProvider({children}) {
   )
 }
 
-function useGridState() {
+function useAppState() {
   const context = React.useContext(GridStateContext)
   if (!context) {
-    throw new Error('useGridState must be used within the GridProvider')
+    throw new Error('useAppState must be used within the GridProvider')
   }
   return context
 }
@@ -111,9 +111,19 @@ function Grid() {
 }
 Grid = React.memo(Grid)
 
-function Cell({row, column}) {
-  const state = useGridState()
-  const cell = state.grid[row][column]
+function withStateSlice(Component, slice) {
+  const MemoComponent = React.memo(Component)
+  function Wrapper(props, ref) {
+    const state = useAppState()
+    return <MemoComponent ref={ref} state={slice(state, props)} {...props} />
+  }
+  Wrapper.displayName = `withStateSlice(${
+    Component.displayName || Component.name
+  })`
+  return React.memo(React.forwardRef(Wrapper))
+}
+
+function Cell({state: cell, row, column}) {
   const dispatch = useGridDispatch()
   const handleClick = () => dispatch({type: 'UPDATE_GRID_CELL', row, column})
   return (
@@ -129,7 +139,7 @@ function Cell({row, column}) {
     </button>
   )
 }
-Cell = React.memo(Cell)
+Cell = withStateSlice(Cell, (state, {row, column}) => state.grid[row][column])
 
 function DogNameInput() {
   const {
