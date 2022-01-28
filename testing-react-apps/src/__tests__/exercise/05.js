@@ -7,7 +7,7 @@ import {render, screen, waitForElementToBeRemoved} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {build, fake} from '@jackfranklin/test-data-bot'
 // 🐨 you'll need to import rest from 'msw' and setupServer from msw/node
-// import {rest} from 'msw'
+import {rest} from 'msw'
 import {setupServer} from 'msw/node'
 import {handlers} from '../../test/server-handlers'
 
@@ -77,4 +77,22 @@ test(`omitting username displays an error`, async () => {
   expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(
     `"username required"`,
   )
+})
+
+test(`unknown server error displays message`, async () => {
+  const errorMessage = '500 error'
+  server.use(
+    rest.post(
+      'https://auth-provider.example.com/api/login',
+      async (_req, res, ctx) => {
+        return res(ctx.status(500), ctx.json({message: errorMessage}))
+      },
+    ),
+  )
+  render(<Login />)
+  userEvent.click(screen.getByRole('button', {name: /submit/i}))
+
+  await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
+
+  expect(screen.getByRole('alert')).toHaveTextContent(errorMessage)
 })
