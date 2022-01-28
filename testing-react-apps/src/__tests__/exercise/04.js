@@ -4,16 +4,25 @@
 import * as React from 'react'
 import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import faker from 'faker'
+// import faker from 'faker'
+import {build, fake} from '@jackfranklin/test-data-bot'
 import Login from '../../components/login'
 
-function buildLoginForm(overrides) {
-  return {
-    username: faker.internet.userName(),
-    password: faker.internet.password(),
-    ...overrides,
-  }
-}
+// function buildLoginForm(overrides) {
+//   return {
+//     username: faker.internet.userName(),
+//     password: faker.internet.password(),
+//     ...overrides,
+//   }
+// }
+// test-data-bot allows creation of factories for test data. It has Faker built in
+// and allows overrides by default.
+const buildLoginForm = build({
+  fields: {
+    username: fake(faker => faker.internet.userName()),
+    password: fake(faker => faker.internet.password()),
+  },
+})
 
 test('submitting the form calls onSubmit with username and password', () => {
   // 🐨 create a variable called "submittedData" and a handleSubmit function that
