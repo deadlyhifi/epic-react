@@ -7,8 +7,9 @@ import {render, screen, waitForElementToBeRemoved} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {build, fake} from '@jackfranklin/test-data-bot'
 // 🐨 you'll need to import rest from 'msw' and setupServer from msw/node
-import {rest} from 'msw'
+// import {rest} from 'msw'
 import {setupServer} from 'msw/node'
+import {handlers} from '../../test/server-handlers'
 
 import Login from '../../components/login-submission'
 
@@ -29,11 +30,13 @@ const buildLoginForm = build({
 // 📜 https://mswjs.io/
 // 🐨 before all the tests, start the server with `server.listen()`
 // 🐨 after all the tests, stop the server with `server.close()`
-const server = setupServer(
-  rest.post('https://auth-provider.example.com/api/login', (req, res, ctx) => {
-    return res(ctx.json({username: req.body.username}))
-  }),
-)
+// const server = setupServer(
+//   rest.post('https://auth-provider.example.com/api/login', (req, res, ctx) => {
+//     return res(ctx.json({username: req.body.username}))
+//   }),
+// )
+// or import a mock server handler.
+const server = setupServer(...handlers)
 
 beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
