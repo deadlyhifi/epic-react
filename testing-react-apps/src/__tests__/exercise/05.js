@@ -73,5 +73,8 @@ test(`omitting username displays an error`, async () => {
   userEvent.click(screen.getByRole('button', {name: /submit/i}))
   await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
 
-  expect(screen.getByRole('alert')).toHaveTextContent(/username required/i)
+  // expect(screen.getByRole('alert')).toHaveTextContent(/username required/i)
+  expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(
+    `"username required"`,
+  )
 })
